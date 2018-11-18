@@ -151,13 +151,13 @@ class PWM(object):
             self._check_i2c()
 
     def _check_i2c(self):
-        import commands
+        import subprocess
         bus_number = self._get_bus_number()
         print("\nYour Pi Rivision is: %s" % self._get_pi_revision())
         print("I2C bus number is: %s" % bus_number)
         print("Checking I2C device:")
         cmd = "ls /dev/i2c-%d" % bus_number
-        output = commands.getoutput(cmd)
+        output = subprocess.getoutput(cmd)
         print('Commands "%s" output:' % cmd)
         print(output)
         if '/dev/i2c-%d' % bus_number in output.split(' '):
@@ -165,7 +165,7 @@ class PWM(object):
         else:
             print("Seems like I2C has not been set. Use 'sudo raspi-config' to set I2C")
         cmd = "i2cdetect -y %s" % self.bus_number
-        output = commands.getoutput(cmd)
+        output = subprocess.getoutput(cmd)
         print("Your PCA9685 address is set to 0x%02X" % self.address)
         print("i2cdetect output:")
         print(output)

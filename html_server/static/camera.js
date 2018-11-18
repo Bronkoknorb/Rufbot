@@ -21,7 +21,7 @@ if(path.endsWith("index.html"))
 if(!path.endsWith("/")) {
     path = path + "/";
 }
-var ws = new WebSocket(wsProtocol + location.host + path + "websocket");
+var ws = new WebSocket(wsProtocol + location.host + path + "video");
 ws.binaryType = 'arraybuffer';
 
 function requestImage() {

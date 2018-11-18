@@ -6,8 +6,9 @@
  </head>
  <body>
     <h1>PyImageStream</h1>
-    <img id="liveImg" /><br />
+    <img id="liveImg" onclick="commandWS.send('test')"/><br />
     Frames per second: <span id="fps">0</span>
-    <script type="text/javascript" src="client.js"></script>
+    <script type="text/javascript" src="camera.js"></script>
+    <script type="text/javascript" src="car.js"></script>
  </body>
 </html>

@@ -13,7 +13,7 @@ from PIL import Image
 import pygame.camera
 import pygame.image
 
-parser = argparse.ArgumentParser(description='Start the PyImageStream server.')
+parser = argparse.ArgumentParser(description='Start the Rufbot server.')
 
 parser.add_argument('--port', default=8888, type=int, help='Web server port (default: 8888)')
 parser.add_argument('--camera', default=0, type=int, help='Camera index, first camera is 0 (default: 0)')
@@ -98,12 +98,37 @@ class ImageWebSocket(tornado.websocket.WebSocketHandler):
         if len(ImageWebSocket.clients) == 0:
             camera.request_stop()
 
+import html_server.video_dir as video_dir
+
+busnum = 1          # Edit busnum to 0, if you use Raspberry Pi 1 or 0
+
+video_dir.setup(busnum)
+video_dir.home_x_y()
+
+
+class CommandWebSocket(tornado.websocket.WebSocketHandler):
+
+    def check_origin(self, origin):
+        # Allow access from every origin
+        return True
+
+    def on_message(self, message):
+        print(message)
+
+
+class TestHandler(tornado.web.RequestHandler):
+    def get(self):
+        video_dir.move_increase_x()
+        self.write("Hello, world")
+
 
 script_path = os.path.dirname(os.path.realpath(__file__))
 static_path = script_path + '/static/'
 
 app = tornado.web.Application([
-        (r"/websocket", ImageWebSocket),
+        (r"/video", ImageWebSocket),
+        (r"/test", TestHandler),
+        (r"/command", CommandWebSocket),
         (r"/(.*)", tornado.web.StaticFileHandler, {'path': static_path, 'default_filename': 'index.html'}),
     ])
 app.listen(args.port)
