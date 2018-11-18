@@ -10,4 +10,4 @@ Author
 ------
 
 Hermann Czedik-Eysenberg  
-a1tv-helpers@hermann.czedik.net
+git-dev@hermann.czedik.net
