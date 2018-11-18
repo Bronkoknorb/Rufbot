@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import PCA9685 as servo
+from .PCA9685 import PWM
 import time
 import os
 
@@ -22,10 +22,8 @@ def setup(busnum=None):
         for line in open(FILE_CONFIG):
             if line[0:8] == 'offset_x':
                 offset_x = int(line[11:-1])
-                #print 'offset_x =', offset_x
             if line[0:8] == 'offset_y':
                 offset_y = int(line[11:-1])
-                #print 'offset_y =', offset_y
     except:
         pass
     Xmin = MinPulse + offset_x
@@ -35,9 +33,9 @@ def setup(busnum=None):
     home_x = (Xmax + Xmin)/2
     home_y = Ymin + 80
     if busnum == None:
-        pwm = servo.PWM()                  # Initialize the servo controller.
+        pwm = PWM()                  # Initialize the servo controller.
     else:
-        pwm = servo.PWM(bus_number=busnum) # Initialize the servo controller.
+        pwm = PWM(bus_number=busnum) # Initialize the servo controller.
     pwm.frequency = 60
 
 # ==========================================================================================
