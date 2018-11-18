@@ -5,9 +5,11 @@ import car_dir
 import motor
 import os
 
-video_dir.setup()
-car_dir.setup()
-motor.setup()     # Initialize the Raspberry Pi GPIO connected to the DC motor. 
+busnum = 1          # Edit busnum to 0, if you uses Raspberry Pi 1 or 0
+
+video_dir.setup(busnum)
+car_dir.setup(busnum)
+motor.setup(busnum)     # Initialize the Raspberry Pi GPIO connected to the DC motor. 
 video_dir.home_x_y()
 car_dir.home()
 

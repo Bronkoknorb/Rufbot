@@ -1,8 +1,13 @@
 #!/usr/bin/env python
+
 import RPi.GPIO as GPIO
-import Sunfounder_PWM_Servo_Driver.Servo_init as pwm
+import PCA9685 as p
 import time
 import os
+
+DIR = os.path.dirname(os.path.realpath(__file__))
+
+FILE_CONFIG = os.path.join(DIR, "config")
 
 # ===========================================================================
 # Raspberry Pi pin11, 12, 13 and 15 to realize the clockwise/counterclockwise
@@ -13,10 +18,6 @@ Motor0_B = 12  # pin12
 Motor1_A = 13  # pin13
 Motor1_B = 15  # pin15
 
-DIR = os.path.dirname(os.path.realpath(__file__))
-
-FILE_CONFIG = os.path.join(DIR, "config")
-
 # ===========================================================================
 # Set channel 4 and 5 of the servo driver IC to generate PWM, thus 
 # controlling the speed of the car
@@ -26,8 +27,6 @@ EN_M1    = 5  # servo driver IC CH5
 
 pins = [Motor0_A, Motor0_B, Motor1_A, Motor1_B]
 
-p = pwm.init()
-
 # ===========================================================================
 # Adjust the duty cycle of the square waves output from channel 4 and 5 of
 # the servo driver IC, so as to control the speed of the car.
@@ -35,11 +34,18 @@ p = pwm.init()
 def setSpeed(speed):
 	speed *= 40
 	print 'speed is: ', speed
-	p.setPWM(EN_M0, 0, speed)
-	p.setPWM(EN_M1, 0, speed)
+	pwm.write(EN_M0, 0, speed)
+	pwm.write(EN_M1, 0, speed)
 
-def setup():
+def setup(busnum=None):
 	global forward0, forward1, backward1, backward0
+	global pwm
+	if busnum == None:
+		pwm = p.PWM()                  # Initialize the servo controller.
+	else:
+		pwm = p.PWM(bus_number=busnum) # Initialize the servo controller.
+
+	pwm.frequency = 60
 	forward0 = 'True'
 	forward1 = 'True'
 	GPIO.setwarnings(False)
