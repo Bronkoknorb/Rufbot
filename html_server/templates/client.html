@@ -62,6 +62,9 @@
 
 <body onload="SmartVideoCarAPI.api.init();">
     <label id="errormessage" class="error"></label>
+    <img id="liveImg" /><br />
+    Frames per second: <span id="fps">0</span>
+    <script type="text/javascript" src="{% static "javascript/camera.js" %}"></script>
     <div id="runmodediv">
         <div id="motiondiv" class="left">
             <table class="leftbuttonpanel">

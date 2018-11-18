@@ -3,7 +3,7 @@ var SmartVideoCarAPI = SmartVideoCarAPI || {};
 SmartVideoCarAPI.api = (function () {
     var sendCommand = function (commandName, args) {
         $("#errormessage").text("");
-        var baseurl = "http://" + document.domain + ":8000/";
+        var baseurl = "/";
         switch (commandName) {
             case "motorforward":
                 $.get(baseurl + "motor/forward");
@@ -42,20 +42,12 @@ SmartVideoCarAPI.api = (function () {
         };
     };
 
-    var initializeVideo = function () {
-        var streamImageUrl = "http://" + document.domain + ":8080/?action=stream";
-        $("body").css("background-image", "url('" + streamImageUrl + "')");
-        $("body").css("background-repeat", "no-repeat");
-        $("body").css("background-position", "center top");
-    }; 
-
     var setSpeed = function (speed) {
         var baseurl = "http://" + document.domain + ":8000/";
         $.get(baseurl + "motor/set/speed/" + speed);
     };
 
     var init = function () {
-        initializeVideo();
         setSpeed(50);
     };
 

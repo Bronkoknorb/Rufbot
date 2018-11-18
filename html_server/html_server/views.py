@@ -5,26 +5,13 @@ import car_dir
 import motor
 import os
 
-
-# Run camera
-LD_LIBRARY_PATH = "/home/pi/Sunfounder_Smart_Video_Car_Kit_for_RaspberryPi/mjpg-streamer/mjpg-streamer/"
-
-MJPG_STREAMER_PATH = "mjpg_streamer"
-MJPG_STREAMER_PATH = LD_LIBRARY_PATH + MJPG_STREAMER_PATH
-INPUT_PATH = "input_uvc.so"
-INPUT_PATH = LD_LIBRARY_PATH + INPUT_PATH
-OUTPUT_PATH = "output_http.so -w ./www"
-OUTPUT_PATH = LD_LIBRARY_PATH + OUTPUT_PATH
-
-command = MJPG_STREAMER_PATH + ' -i \"' + INPUT_PATH + '" -o "' + OUTPUT_PATH + '" &'
-os.system(command)
-
 video_dir.setup()
 car_dir.setup()
 motor.setup()     # Initialize the Raspberry Pi GPIO connected to the DC motor. 
 video_dir.home_x_y()
 car_dir.home()
 
+# TODO do not hardcode file path
 # Read config file
 FILE_CONFIG = "/home/pi/Sunfounder_Smart_Video_Car_Kit_for_RaspberryPi/server/config"
 offset = "0"
