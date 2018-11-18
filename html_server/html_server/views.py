@@ -11,9 +11,10 @@ motor.setup()     # Initialize the Raspberry Pi GPIO connected to the DC motor.
 video_dir.home_x_y()
 car_dir.home()
 
-# TODO do not hardcode file path
-# Read config file
-FILE_CONFIG = "/home/pi/Sunfounder_Smart_Video_Car_Kit_for_RaspberryPi/server/config"
+DIR = os.path.dirname(os.path.realpath(__file__))
+
+FILE_CONFIG = os.path.join(DIR, "config")
+
 offset = "0"
 offset_x = "0"
 offset_y = "0"
