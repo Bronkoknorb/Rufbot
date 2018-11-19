@@ -16,7 +16,7 @@ def setup(busnum=None):
     leftPWM = 400
     homePWM = 450
     rightPWM = 500
-    offset =0
+    offset = 0
     try:
         for line in open(FILE_CONFIG):
             if line[0:8] == 'offset =':
