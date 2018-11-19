@@ -17,3 +17,12 @@ commandWS.onopen = function() {
 commandWS.onmessage = function(evt) {
     console.log("received command message");
 };
+
+var element = document.getElementById("liveImg");
+
+element.addEventListener("mousedown", function(e){
+    console.log(e);
+});
+element.addEventListener("mouseup", function(e){
+    console.log(e);
+});
