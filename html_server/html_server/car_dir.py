@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import PCA9685 as servo
+from .PCA9685 import PWM
 import time
 import os
 
@@ -22,14 +22,14 @@ def setup(busnum=None):
             if line[0:8] == 'offset =':
                 offset = int(line[9:-1])
     except:
-        print 'config error'
+        print('config error')
     leftPWM += offset
     homePWM += offset
     rightPWM += offset
-    if busnum == None:
-        pwm = servo.PWM()                  # Initialize the servo controller.
+    if busnum is None:
+        pwm = PWM()                  # Initialize the servo controller.
     else:
-        pwm = servo.PWM(bus_number=busnum) # Initialize the servo controller.
+        pwm = PWM(bus_number=busnum) # Initialize the servo controller.
     pwm.frequency = 60
 
 # ==========================================================================================

@@ -13,6 +13,10 @@ from PIL import Image
 import pygame.camera
 import pygame.image
 
+import html_server.video_dir as video_dir
+import html_server.car_dir as car_dir
+import html_server.motor as motor
+
 parser = argparse.ArgumentParser(description='Start the Rufbot server.')
 
 parser.add_argument('--port', default=8888, type=int, help='Web server port (default: 8888)')
@@ -98,13 +102,32 @@ class ImageWebSocket(tornado.websocket.WebSocketHandler):
         if len(ImageWebSocket.clients) == 0:
             camera.request_stop()
 
-import html_server.video_dir as video_dir
+
 
 busnum = 1          # Edit busnum to 0, if you use Raspberry Pi 1 or 0
 
 video_dir.setup(busnum)
+car_dir.setup(busnum)
+motor.setup(busnum)     # Initialize the Raspberry Pi GPIO connected to the DC motor.
 video_dir.home_x_y()
+car_dir.home()
 
+# TODO make speed configurable or pick nice speed
+motor.setSpeed(50)
+
+def handle_command(command):
+    if command == "forward":
+        motor.forward()
+    elif command == "backward":
+        motor.backward()
+    elif command == "video_right":
+        video_dir.move_increase_x()
+    elif command == "video_left":
+        video_dir.move_decrease_x()
+    elif command == "video_up":
+        video_dir.move_increase_y()
+    elif command == "video_down":
+        video_dir.move_decrease_y()
 
 class CommandWebSocket(tornado.websocket.WebSocketHandler):
 
@@ -113,13 +136,13 @@ class CommandWebSocket(tornado.websocket.WebSocketHandler):
         return True
 
     def on_message(self, message):
-        print(message)
+        handle_command(message)
 
 
-class TestHandler(tornado.web.RequestHandler):
-    def get(self):
-        video_dir.move_increase_x()
-        self.write("Hello, world")
+class CommandHandler(tornado.web.RequestHandler):
+    def get(self, command):
+        handle_command(command)
+        self.write("Accepted command " + command)
 
 
 script_path = os.path.dirname(os.path.realpath(__file__))
@@ -127,7 +150,7 @@ static_path = script_path + '/static/'
 
 app = tornado.web.Application([
         (r"/video", ImageWebSocket),
-        (r"/test", TestHandler),
+        (r"/cmd/([^/]+)", CommandHandler),
         (r"/command", CommandWebSocket),
         (r"/(.*)", tornado.web.StaticFileHandler, {'path': static_path, 'default_filename': 'index.html'}),
     ])

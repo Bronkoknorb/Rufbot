@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import RPi.GPIO as GPIO
-import PCA9685 as p
+from .PCA9685 import PWM
 import time
 import os
 
@@ -33,17 +33,17 @@ pins = [Motor0_A, Motor0_B, Motor1_A, Motor1_B]
 # ===========================================================================
 def setSpeed(speed):
     speed *= 40
-    print 'speed is: ', speed
+    print('speed is: ', speed)
     pwm.write(EN_M0, 0, speed)
     pwm.write(EN_M1, 0, speed)
 
 def setup(busnum=None):
     global forward0, forward1, backward1, backward0
     global pwm
-    if busnum == None:
-        pwm = p.PWM()                  # Initialize the servo controller.
+    if busnum is None:
+        pwm = PWM()                  # Initialize the servo controller.
     else:
-        pwm = p.PWM(bus_number=busnum) # Initialize the servo controller.
+        pwm = PWM(bus_number=busnum) # Initialize the servo controller.
 
     pwm.frequency = 60
     forward0 = 'True'
@@ -82,7 +82,7 @@ def motor0(x):
         GPIO.output(Motor0_A, GPIO.HIGH)
         GPIO.output(Motor0_B, GPIO.LOW)
     else:
-        print 'Config Error'
+        print('Config Error')
 
 def motor1(x):
     if x == 'True':
@@ -126,11 +126,11 @@ def ctrl(status, direction=1):
         elif direction == -1:  # Backward
             backward()
         else:
-            print 'Argument error! direction must be 1 or -1.'
+            print('Argument error! direction must be 1 or -1.')
     elif status == 0: # Stop
         stop()
     else:
-        print 'Argument error! status must be 0 or 1.'
+        print('Argument error! status must be 0 or 1.')
 
 def test():
     while True:

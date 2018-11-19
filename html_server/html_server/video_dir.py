@@ -32,7 +32,7 @@ def setup(busnum=None):
     Ymax = MaxPulse + offset_y
     home_x = (Xmax + Xmin)//2
     home_y = Ymin + 80
-    if busnum == None:
+    if busnum is None:
         pwm = PWM()                  # Initialize the servo controller.
     else:
         pwm = PWM(bus_number=busnum) # Initialize the servo controller.
