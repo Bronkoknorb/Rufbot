@@ -13,9 +13,9 @@ from PIL import Image
 import pygame.camera
 import pygame.image
 
-import html_server.video_dir as video_dir
-import html_server.car_dir as car_dir
-import html_server.motor as motor
+import sunfounder.video_dir as video_dir
+import sunfounder.car_dir as car_dir
+import sunfounder.motor as motor
 
 parser = argparse.ArgumentParser(description='Start the Rufbot server.')
 
