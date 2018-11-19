@@ -148,12 +148,15 @@ class CommandHandler(tornado.web.RequestHandler):
 script_path = os.path.dirname(os.path.realpath(__file__))
 static_path = script_path + '/static/'
 
+# TODO set to False
+DEBUG = True
+
 app = tornado.web.Application([
         (r"/video", ImageWebSocket),
         (r"/cmd/([^/]+)", CommandHandler),
         (r"/command", CommandWebSocket),
         (r"/(.*)", tornado.web.StaticFileHandler, {'path': static_path, 'default_filename': 'index.html'}),
-    ])
+    ], debug=DEBUG)
 app.listen(args.port)
 
 print("Starting server: http://localhost:" + str(args.port) + "/")
