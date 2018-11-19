@@ -1,5 +1,4 @@
 var img = document.getElementById("liveImg");
-var fpsText = document.getElementById("fps");
 
 var target_fps = 24;
 
@@ -46,7 +45,6 @@ ws.onmessage = function(evt) {
     time = (time * time_smoothing) + (current_time * (1.0 - time_smoothing));
     start_time = end_time;
     var fps = Math.round(1000 / time);
-    fpsText.textContent = fps;
 
     var current_request_time = performance.now() - request_start_time;
     // smooth with moving average
