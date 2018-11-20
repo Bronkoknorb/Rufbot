@@ -18,11 +18,21 @@ commandWS.onmessage = function(evt) {
     console.log("received command message");
 };
 
-var element = document.getElementById("liveImg");
+var element = document.getElementById("gestureHandler");
 
 element.addEventListener("mousedown", function(e){
-    console.log(e);
+    commandWS.send("mousedown");
 });
 element.addEventListener("mouseup", function(e){
-    console.log(e);
+    commandWS.send("mouseup");
+});
+element.addEventListener("touchstart", function(e){
+    if(e.touches.length === 1) {
+        e.preventDefault();
+        commandWS.send("touchstart");
+    }
+});
+element.addEventListener("touchend", function(e){
+    e.preventDefault();
+    commandWS.send("touchend");
 });

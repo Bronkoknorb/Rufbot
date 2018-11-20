@@ -116,6 +116,7 @@ car_dir.home()
 motor.setSpeed(50)
 
 def handle_command(command):
+    print("Handling command " + command)
     if command == "forward":
         motor.forward()
     elif command == "backward":
