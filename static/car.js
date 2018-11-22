@@ -20,19 +20,20 @@ commandWS.onmessage = function(evt) {
 
 var element = document.getElementById("gestureHandler");
 
-element.addEventListener("mousedown", function(e){
-    commandWS.send("mousedown");
+const mc = new Hammer(element);
+
+// let the pan gesture support all directions.
+// this will block the vertical scrolling on a touch-device while on the element
+mc.get('pan').set({ direction: Hammer.DIRECTION_ALL });
+
+mc.on("panstart", function(ev) {
+    commandWS.send("video_pan_start");
 });
-element.addEventListener("mouseup", function(e){
-    commandWS.send("mouseup");
-});
-element.addEventListener("touchstart", function(e){
-    if(e.touches.length === 1) {
-        e.preventDefault();
-        commandWS.send("touchstart");
-    }
-});
-element.addEventListener("touchend", function(e){
-    e.preventDefault();
-    commandWS.send("touchend");
+
+mc.on("panmove", function(ev) {
+    // TODO don't do rounding but work with floats
+    const deltaX = Math.round(ev.deltaX / 2);
+    const deltaY = Math.round(ev.deltaY / 2);
+    const command = "video_pan_move(" + deltaX + "," + deltaY +")";
+    commandWS.send(command);
 });

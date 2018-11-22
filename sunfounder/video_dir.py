@@ -8,30 +8,20 @@ DIR = os.path.dirname(os.path.realpath(__file__))
 
 FILE_CONFIG = os.path.join(DIR, "config")
 
-MinPulse = 200
-MaxPulse = 700
-
 Current_x = 0
 Current_y = 0
 
+start_x = 0
+start_y = 0
+
 def setup(busnum=None):
     global Xmin, Ymin, Xmax, Ymax, home_x, home_y, pwm
-    offset_x = 0
-    offset_y = 0
-    try:
-        for line in open(FILE_CONFIG):
-            if line[0:8] == 'offset_x':
-                offset_x = int(line[11:-1])
-            if line[0:8] == 'offset_y':
-                offset_y = int(line[11:-1])
-    except:
-        pass
-    Xmin = MinPulse + offset_x
-    Xmax = MaxPulse + offset_x
-    Ymin = MinPulse + offset_y
-    Ymax = MaxPulse + offset_y
-    home_x = (Xmax + Xmin)//2
-    home_y = (Ymax + Ymin)//2
+    Xmin = 212
+    Xmax = 700
+    Ymin = 130
+    Ymax = 550
+    home_x = 470
+    home_y = 200
     if busnum is None:
         pwm = PWM()                  # Initialize the servo controller.
     else:
@@ -83,16 +73,30 @@ def move_decrease_y():
 # move forward.
 # ==========================================================================================
 def home_x_y():
-    global Current_y
     global Current_x
-    Current_y = home_y
+    global Current_y
     Current_x = home_x
+    Current_y = home_y
     pwm.write(14, 0, Current_x)
     pwm.write(15, 0, Current_y)
 
-def calibrate(x,y):
-    pwm.write(14, 0, (MaxPulse+MinPulse)/2+x)
-    pwm.write(15, 0, (MaxPulse+MinPulse)/2+y)
+def move():
+    pwm.write(14, 0, Current_x)
+    pwm.write(15, 0, Current_y)
+
+def pan_start():
+    global start_x
+    global start_y
+    start_x = Current_x
+    start_y = Current_y
+
+def pan_move(x, y):
+    global Current_x
+    global Current_y
+    Current_x = max(Xmin, min(start_x + x, Xmax))
+    Current_y = max(Ymin, min(start_y + y, Ymax))
+    print("move: " + str(Current_x) + " " + str(Current_y))
+    move()
 
 def test():
     while True:

@@ -3,6 +3,7 @@
 import argparse
 import os
 import io
+import re
 
 import tornado.ioloop
 import tornado.web
@@ -129,6 +130,16 @@ def handle_command(command):
         video_dir.move_increase_y()
     elif command == "video_down":
         video_dir.move_decrease_y()
+    elif command == "video_pan_start":
+        video_dir.pan_start()
+    elif command.startswith("video_pan_move"):
+        match = re.search("video_pan_move\((-?\d+),(-?\d+)\)", command)
+        if match:
+            video_dir.pan_move(int(match.group(1)), int(match.group(2)))
+        else:
+            print("ERROR: Unexpected command " + command)
+    else:
+        print("ERROR: Unexpected command " + command)
 
 class CommandWebSocket(tornado.websocket.WebSocketHandler):
 
