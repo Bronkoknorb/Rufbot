@@ -2,5 +2,18 @@
   "name": "Rufbot",
   "start_url": "/",
   "display": "fullscreen",
-  "orientation": "landscape"
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "icon.png",
+      "type": "image/png",
+      "sizes": "154x154"
+    },
+    {
+      "src": "icon_large.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "background_color": "#ffffff"
 }
