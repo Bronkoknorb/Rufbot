@@ -1,3 +1,5 @@
+(function () {
+
 var img = document.getElementById("liveImg");
 
 var target_fps = 24;
@@ -53,3 +55,7 @@ ws.onmessage = function(evt) {
 
     setTimeout(requestImage, timeout);
 };
+
+// TODO implementieren dass kamera abgeschaltet wird, wenn seite nicht visible (siehe hm-aquarium)
+
+}());
