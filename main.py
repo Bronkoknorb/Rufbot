@@ -104,7 +104,6 @@ class ImageWebSocket(tornado.websocket.WebSocketHandler):
             camera.request_stop()
 
 
-
 busnum = 1          # Edit busnum to 0, if you use Raspberry Pi 1 or 0
 
 video_dir.setup(busnum)
@@ -160,8 +159,7 @@ class CommandHandler(tornado.web.RequestHandler):
 script_path = os.path.dirname(os.path.realpath(__file__))
 static_path = script_path + '/static/'
 
-# TODO set to False
-DEBUG = True
+DEBUG = False
 
 app = tornado.web.Application([
         (r"/video", ImageWebSocket),
