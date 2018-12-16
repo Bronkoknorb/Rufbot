@@ -110,10 +110,7 @@ mc.on("panmove", function(ev) {
 
 */
 
-function handleDriveStartEvent(e) {
-  const relativeX = e.clientX / e.target.offsetWidth;
-    const relativeY = e.clientY / e.target.offsetHeight;
-
+function handleDriveStartEvent(relativeX, relativeY) {
     if (relativeY < 0.5) {
         if (relativeX < 0.3333) {
             car.drive_fwd_left();
@@ -134,7 +131,9 @@ function handleDriveStartEvent(e) {
 }
 
 element.addEventListener("mousedown", function(e) {
-    handleDriveStartEvent(e);
+    const relativeX = e.clientX / e.target.offsetWidth;
+    const relativeY = e.clientY / e.target.offsetHeight;
+    handleDriveStartEvent(relativeX, relativeY);
 });
 element.addEventListener("mouseup", function(e) {
     car.drive_stop();
@@ -142,7 +141,9 @@ element.addEventListener("mouseup", function(e) {
 element.addEventListener("touchstart", function(e) {
     e.preventDefault();
     if(e.touches.length === 1) {
-        handleDriveStartEvent();
+        const relativeX = e.touches[0].clientX / e.target.offsetWidth;
+        const relativeY = e.touches[0].clientY / e.target.offsetHeight;
+        handleDriveStartEvent(relativeX, relativeY);
     }
 });
 element.addEventListener("touchend", function(e) {
