@@ -17,6 +17,7 @@ import pygame.image
 import sunfounder.video_dir as video_dir
 import sunfounder.car_dir as car_dir
 import sunfounder.motor as motor
+from sunfounder.PCA9685 import PWM
 
 parser = argparse.ArgumentParser(description='Start the Rufbot server.')
 
@@ -104,16 +105,49 @@ class ImageWebSocket(tornado.websocket.WebSocketHandler):
             camera.request_stop()
 
 
-busnum = 1          # Edit busnum to 0, if you use Raspberry Pi 1 or 0
+class Car:
+    def __init__(self):
+        busnum = 1  # Edit busnum to 0, if you use Raspberry Pi 1 or 0
+        pwm = PWM(bus_number=busnum)  # Initialize the servo controller.
 
-video_dir.setup(busnum)
-car_dir.setup(busnum)
-motor.setup(busnum)     # Initialize the Raspberry Pi GPIO connected to the DC motor.
-video_dir.home_x_y()
-car_dir.home()
+        video_dir.setup(pwm)
+        video_dir.home_x_y()
 
-# TODO make speed configurable or pick nice speed
-motor.setSpeed(50)
+        car_dir.setup(pwm)
+        car_dir.home()
+
+        motor.setup(pwm)  # Initialize the Raspberry Pi GPIO connected to the DC motor.
+        motor.setSpeed(100)
+
+    def drive_fwd(self):
+        car_dir.home()
+        motor.forward()
+
+    def drive_fwd_left(self):
+        car_dir.turn_left()
+        motor.forward()
+
+    def drive_fwd_right(self):
+        car_dir.turn_right()
+        motor.forward()
+
+    def drive_bwd(self):
+        car_dir.home()
+        motor.backward()
+
+    def drive_bwd_left(self):
+        car_dir.turn_left()
+        motor.backward()
+
+    def drive_bwd_right(self):
+        car_dir.turn_right()
+        motor.backward()
+
+    def drive_stop(self):
+        motor.stop()
+
+
+car = Car()
 
 def handle_command(command):
     print("Handling command " + command)
@@ -137,6 +171,20 @@ def handle_command(command):
             video_dir.pan_move(int(match.group(1)), int(match.group(2)))
         else:
             print("ERROR: Unexpected command " + command)
+    elif command == "drive_fwd":
+        car.drive_fwd()
+    elif command == "drive_fwd_left":
+        car.drive_fwd_left()
+    elif command == "drive_fwd_right":
+        car.drive_fwd_right()
+    elif command == "drive_bwd":
+        car.drive_bwd()
+    elif command == "drive_bwd_left":
+        car.drive_bwd_left()
+    elif command == "drive_bwd_right":
+        car.drive_bwd_right()
+    elif command == "drive_stop":
+        car.drive_stop()
     else:
         print("ERROR: Unexpected command " + command)
 

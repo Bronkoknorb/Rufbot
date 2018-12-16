@@ -11,7 +11,7 @@ FILE_CONFIG = os.path.join(DIR, "config")
 def Map(x, in_min, in_max, out_min, out_max):
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
-def setup(busnum=None):
+def setup(pwm_in):
     global leftPWM, rightPWM, homePWM, pwm
     leftPWM = 400
     homePWM = 450
@@ -26,11 +26,7 @@ def setup(busnum=None):
     leftPWM += offset
     homePWM += offset
     rightPWM += offset
-    if busnum is None:
-        pwm = PWM()                  # Initialize the servo controller.
-    else:
-        pwm = PWM(bus_number=busnum) # Initialize the servo controller.
-    pwm.frequency = 60
+    pwm = pwm_in
 
 # ==========================================================================================
 # Control the servo connected to channel 0 of the servo control board, so as to make the 

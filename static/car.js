@@ -47,11 +47,43 @@ class Car {
     }
   }
 
+  drive_fwd() {
+    commandWS.send("drive_fwd");
+  }
+
+  drive_fwd_left() {
+    commandWS.send("drive_fwd_left");
+  }
+
+  drive_fwd_right() {
+    commandWS.send("drive_fwd_right");
+  }
+
+  drive_bwd() {
+    commandWS.send("drive_bwd");
+  }
+
+  drive_bwd_left() {
+    commandWS.send("drive_bwd_left");
+  }
+
+  drive_bwd_right() {
+    commandWS.send("drive_bwd_right");
+  }
+
+  drive_stop() {
+    commandWS.send("drive_stop");
+  }
+
 }
 
 const car = new Car();
 
 const element = document.getElementById("gestureHandler");
+
+/*
+
+TODO camera panning:
 
 const mc = new Hammer(element);
 
@@ -74,6 +106,48 @@ mc.on("panmove", function(ev) {
     const deltaX = Math.round(ev.deltaX / 2);
     const deltaY = Math.round(ev.deltaY / 2);
     car.video_pan_move(deltaX, deltaY)
+});
+
+*/
+
+function handleDriveStartEvent(e) {
+  const relativeX = e.clientX / e.target.offsetWidth;
+    const relativeY = e.clientY / e.target.offsetHeight;
+
+    if (relativeY < 0.5) {
+        if (relativeX < 0.3333) {
+            car.drive_fwd_left();
+        } else if (relativeX < 0.6666) {
+            car.drive_fwd();
+        } else {
+            car.drive_fwd_right();
+        }
+    } else {
+        if (relativeX < 0.3333) {
+            car.drive_bwd_left();
+        } else if(relativeX < 0.6666) {
+            car.drive_bwd();
+        } else {
+            car.drive_bwd_right();
+        }
+    }
+}
+
+element.addEventListener("mousedown", function(e) {
+    handleDriveStartEvent(e);
+});
+element.addEventListener("mouseup", function(e) {
+    car.drive_stop();
+});
+element.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    if(e.touches.length === 1) {
+        handleDriveStartEvent();
+    }
+});
+element.addEventListener("touchend", function(e) {
+    e.preventDefault();
+    car.drive_stop();
 });
 
 }());
