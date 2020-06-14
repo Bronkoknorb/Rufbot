@@ -79,34 +79,28 @@
 
   const element = document.getElementById("gestureHandler");
 
-  /*
+  const mc = new Hammer(element);
 
-TODO camera panning:
+  // let the pan gesture support all directions.
+  // this will block the vertical scrolling on a touch-device while on the element
+  mc.get("pan").set({ direction: Hammer.DIRECTION_ALL });
 
-const mc = new Hammer(element);
+  mc.get("tap").set({ taps: 2 });
 
-// let the pan gesture support all directions.
-// this will block the vertical scrolling on a touch-device while on the element
-mc.get('pan').set({ direction: Hammer.DIRECTION_ALL });
-
-mc.get('tap').set({ taps: 2 });
-
-mc.on("tap", function(ev) {
+  mc.on("tap", function (ev) {
     car.toggle_lock();
-});
+  });
 
-mc.on("panstart", function(ev) {
+  mc.on("panstart", function (ev) {
     car.video_pan_start();
-});
+  });
 
-mc.on("panmove", function(ev) {
-    // TODO don't do rounding but work with floats
+  mc.on("panmove", function (ev) {
+    // TODO work with floats and normalize distance
     const deltaX = Math.round(ev.deltaX / 2);
     const deltaY = Math.round(ev.deltaY / 2);
-    car.video_pan_move(deltaX, deltaY)
-});
-
-*/
+    car.video_pan_move(deltaX, deltaY);
+  });
 
   function handleDriveStartEvent(relativeX, relativeY) {
     if (relativeY < 0.5) {
@@ -137,7 +131,6 @@ mc.on("panmove", function(ev) {
     car.drive_stop();
   });
   element.addEventListener("touchstart", function (e) {
-    e.preventDefault();
     if (e.touches.length === 1) {
       const relativeX = e.touches[0].clientX / e.target.offsetWidth;
       const relativeY = e.touches[0].clientY / e.target.offsetHeight;
@@ -145,7 +138,6 @@ mc.on("panmove", function(ev) {
     }
   });
   element.addEventListener("touchend", function (e) {
-    e.preventDefault();
     car.drive_stop();
   });
 })();
