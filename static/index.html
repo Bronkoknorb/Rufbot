@@ -37,11 +37,14 @@
         top: 0;
         right: 0;
       }
+      #driveOverlay div {
+        mix-blend-mode: difference;
+        position: absolute;
+        opacity: 0.3;
+      }
       #driveOverlay div:nth-of-type(1) {
         border-right: 1px solid white;
         border-bottom: 1px solid white;
-        mix-blend-mode: difference;
-        position: absolute;
         width: 33.333333%;
         height: 50%;
         top: 0;
@@ -50,8 +53,6 @@
       #driveOverlay div:nth-of-type(2) {
         border-right: 1px solid white;
         border-bottom: 1px solid white;
-        mix-blend-mode: difference;
-        position: absolute;
         width: 33.333333%;
         height: 50%;
         top: 0;
@@ -59,8 +60,6 @@
       }
       #driveOverlay div:nth-of-type(3) {
         border-bottom: 1px solid white;
-        mix-blend-mode: difference;
-        position: absolute;
         width: 33.333333%;
         height: 50%;
         top: 0;
@@ -68,8 +67,6 @@
       }
       #driveOverlay div:nth-of-type(4) {
         border-right: 1px solid white;
-        mix-blend-mode: difference;
-        position: absolute;
         width: 33.333333%;
         height: 50%;
         top: 50%;
@@ -77,16 +74,12 @@
       }
       #driveOverlay div:nth-of-type(5) {
         border-right: 1px solid white;
-        mix-blend-mode: difference;
-        position: absolute;
         width: 33.333333%;
         height: 50%;
         top: 50%;
         left: 33.333333%;
       }
       #driveOverlay div:nth-of-type(6) {
-        mix-blend-mode: difference;
-        position: absolute;
         width: 33.333333%;
         height: 50%;
         top: 50%;
@@ -100,11 +93,40 @@
         top: 0;
         right: 0;
       }
+      .buttons {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin-right: auto;
+        margin-left: auto;
+        width: 54vh;
+        height: 18vh;
+        display: flex;
+      }
+      .buttons img:first-of-type {
+        border-top-left-radius: 4vh;
+      }
+      .buttons img:last-of-type {
+        border-top-right-radius: 4vh;
+      }
+      .buttons img {
+        width: 17vh;
+        padding: 0.5vh;
+        background-color: rgba(255, 255, 255, 0.6);
+        opacity: 0.7;
+      }
+      .buttons img.enabled {
+        opacity: 1;
+      }
+      .hidden {
+        display: none;
+      }
     </style>
   </head>
   <body>
     <img id="liveImg" alt="Video" />
-    <div id="driveOverlay">
+    <div id="driveOverlay" class="hidden">
       <div></div>
       <div></div>
       <div></div>
@@ -113,6 +135,11 @@
       <div></div>
     </div>
     <div id="gestureHandler"></div>
+    <div class="buttons">
+      <img id="button-lock" src="button-lock.svg" alt="Lock" />
+      <img id="button-drive" src="button-drive.svg" alt="Drive" />
+      <img id="button-camera" src="button-move.svg" alt="Move" />
+    </div>
     <script type="text/javascript" src="camera.js"></script>
     <script type="text/javascript" src="car.js"></script>
   </body>

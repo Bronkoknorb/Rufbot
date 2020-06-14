@@ -163,6 +163,8 @@ def handle_command(command):
         video_dir.move_increase_y()
     elif command == "video_down":
         video_dir.move_decrease_y()
+    elif command == "video_reset":
+        video_dir.home_x_y()
     elif command == "video_pan_start":
         video_dir.pan_start()
     elif command.startswith("video_pan_move"):

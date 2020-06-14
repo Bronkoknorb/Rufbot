@@ -23,60 +23,114 @@
 
   class Car {
     constructor() {
-      this.locked = true;
+      this.mode = "locked";
     }
 
-    toggle_lock() {
-      if (this.locked) {
-        this.locked = false;
-      } else {
-        this.locked = true;
-      }
+    setMode(mode) {
+      this.mode = mode;
+    }
+
+    isCameraMode() {
+      return this.mode === "camera";
+    }
+
+    isDriveMode() {
+      return this.mode === "drive";
+    }
+
+    video_reset() {
+      if (!this.isCameraMode()) return;
+      commandWS.send("video_reset");
     }
 
     video_pan_start() {
-      if (!this.locked) {
-        commandWS.send("video_pan_start");
-      }
+      if (!this.isCameraMode()) return;
+      commandWS.send("video_pan_start");
     }
 
     video_pan_move(deltaX, deltaY) {
-      if (!this.locked) {
-        const command = "video_pan_move(" + deltaX + "," + deltaY + ")";
-        commandWS.send(command);
-      }
+      if (!this.isCameraMode()) return;
+
+      const command = "video_pan_move(" + deltaX + "," + deltaY + ")";
+      commandWS.send(command);
     }
 
     drive_fwd() {
+      if (!this.isDriveMode()) return;
+
       commandWS.send("drive_fwd");
     }
 
     drive_fwd_left() {
+      if (!this.isDriveMode()) return;
+
       commandWS.send("drive_fwd_left");
     }
 
     drive_fwd_right() {
+      if (!this.isDriveMode()) return;
+
       commandWS.send("drive_fwd_right");
     }
 
     drive_bwd() {
+      if (!this.isDriveMode()) return;
+
       commandWS.send("drive_bwd");
     }
 
     drive_bwd_left() {
+      if (!this.isDriveMode()) return;
+
       commandWS.send("drive_bwd_left");
     }
 
     drive_bwd_right() {
+      if (!this.isDriveMode()) return;
+
       commandWS.send("drive_bwd_right");
     }
 
     drive_stop() {
+      if (!this.isDriveMode()) return;
+
       commandWS.send("drive_stop");
     }
   }
 
   const car = new Car();
+
+  const buttonLock = document.getElementById("button-lock");
+  const buttonDrive = document.getElementById("button-drive");
+  const buttonCamera = document.getElementById("button-camera");
+  const driveOverlay = document.getElementById("driveOverlay");
+  buttonLock.addEventListener("click", (e) => {
+    car.setMode("locked");
+    handleModeChange();
+  });
+  buttonDrive.addEventListener("click", (e) => {
+    car.setMode("drive");
+    handleModeChange();
+  });
+  buttonCamera.addEventListener("click", (e) => {
+    car.setMode("camera");
+    handleModeChange();
+  });
+  function handleModeChange() {
+    buttonLock.classList.remove("enabled");
+    buttonDrive.classList.remove("enabled");
+    buttonCamera.classList.remove("enabled");
+    driveOverlay.classList.add("hidden");
+    if (car.isCameraMode()) {
+      buttonCamera.classList.add("enabled");
+    } else if (car.isDriveMode()) {
+      buttonDrive.classList.add("enabled");
+      driveOverlay.classList.remove("hidden");
+    } else {
+      buttonLock.classList.add("enabled");
+    }
+  }
+  handleModeChange();
 
   const element = document.getElementById("gestureHandler");
 
@@ -89,7 +143,7 @@
   mc.get("tap").set({ taps: 2 });
 
   mc.on("tap", function (ev) {
-    car.toggle_lock();
+    car.video_reset();
   });
 
   mc.on("panstart", function (ev) {
