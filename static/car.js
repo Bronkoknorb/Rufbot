@@ -119,11 +119,11 @@ mc.on("panmove", function(ev) {
       }
     } else {
       if (relativeX < 0.3333) {
-        car.drive_bwd_left();
+        car.drive_bwd_right();
       } else if (relativeX < 0.6666) {
         car.drive_bwd();
       } else {
-        car.drive_bwd_right();
+        car.drive_bwd_left();
       }
     }
   }
