@@ -8,17 +8,18 @@
   if (!path.endsWith("/")) {
     path = path + "/";
   }
-  const commandWS = new WebSocket(
-    wsProtocol + location.host + path + "command"
-  );
 
-  commandWS.onopen = function () {
-    console.log("command connection established");
-  };
+  let commandWS;
 
-  commandWS.onmessage = function (evt) {
-    console.log("received command message");
-  };
+  function connect() {
+    commandWS = new WebSocket(wsProtocol + location.host + path + "command");
+
+    commandWS.onopen = function () {
+      console.log("command connection established");
+    };
+  }
+
+  connect();
 
   class Car {
     constructor() {
@@ -121,6 +122,13 @@
       }
     }
   }
+
+  element.addEventListener("click", function (e) {
+    if (commandWS.readyState === WebSocket.CLOSED) {
+      console.log("Reconnecting to command Websocket");
+      connect();
+    }
+  });
 
   element.addEventListener("mousedown", function (e) {
     const relativeX = e.clientX / e.target.offsetWidth;
