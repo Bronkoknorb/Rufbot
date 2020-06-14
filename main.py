@@ -168,9 +168,9 @@ def handle_command(command):
     elif command == "video_pan_start":
         video_dir.pan_start()
     elif command.startswith("video_pan_move"):
-        match = re.search("video_pan_move\((-?\d+),(-?\d+)\)", command)
+        match = re.search("video_pan_move\((-?[\d.]+),(-?[\d.]+)\)", command)
         if match:
-            video_dir.pan_move(int(match.group(1)), int(match.group(2)))
+            video_dir.pan_move(float(match.group(1)), float(match.group(2)))
         else:
             print("ERROR: Unexpected command " + command)
     elif command == "drive_fwd":

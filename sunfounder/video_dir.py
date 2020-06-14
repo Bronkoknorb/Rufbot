@@ -13,15 +13,16 @@ start_x = 0
 start_y = 0
 
 def setup(pwm_in):
-    global Xmin, Ymin, Xmax, Ymax, home_x, home_y, pwm
+    global Xmin, Ymin, Xmax, Ymax, pan_x_factor, pan_y_factor, home_x, home_y, pwm
     Xmin = 212
     Xmax = 700
     Ymin = 130
     Ymax = 550
+    pan_x_factor = 150
+    pan_y_factor = 100
     home_x = 470
     home_y = 200
     pwm = pwm_in
-
 
 def move_decrease_x():
     global Current_x
@@ -72,6 +73,8 @@ def pan_start():
 def pan_move(x, y):
     global Current_x
     global Current_y
+    x = round(x * pan_x_factor)
+    y = round(y * pan_y_factor)
     Current_x = max(Xmin, min(start_x + x, Xmax))
     Current_y = max(Ymin, min(start_y + y, Ymax))
     move()

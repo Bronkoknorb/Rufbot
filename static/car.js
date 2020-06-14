@@ -151,9 +151,8 @@
   });
 
   mc.on("panmove", function (ev) {
-    // TODO work with floats and normalize distance
-    const deltaX = Math.round(ev.deltaX / 2);
-    const deltaY = Math.round(ev.deltaY / 2);
+    const deltaX = ev.deltaX / ev.target.clientWidth;
+    const deltaY = ev.deltaY / ev.target.clientHeight;
     car.video_pan_move(deltaX, deltaY);
   });
 
