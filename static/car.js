@@ -1,87 +1,85 @@
 (function () {
+  const wsProtocol = location.protocol === "https:" ? "wss://" : "ws://";
 
-const wsProtocol = (location.protocol === "https:") ? "wss://" : "ws://";
-
-const path = location.pathname;
-if(path.endsWith("index.html"))
-{
+  let path = location.pathname;
+  if (path.endsWith("index.html")) {
     path = path.substring(0, path.length - "index.html".length);
-}
-if(!path.endsWith("/")) {
+  }
+  if (!path.endsWith("/")) {
     path = path + "/";
-}
-const commandWS = new WebSocket(wsProtocol + location.host + path + "command");
+  }
+  const commandWS = new WebSocket(
+    wsProtocol + location.host + path + "command"
+  );
 
-commandWS.onopen = function() {
+  commandWS.onopen = function () {
     console.log("command connection established");
-};
+  };
 
-commandWS.onmessage = function(evt) {
+  commandWS.onmessage = function (evt) {
     console.log("received command message");
-};
+  };
 
-class Car {
+  class Car {
+    constructor() {
+      this.locked = true;
+    }
 
-  constructor() {
-    this.locked = true;
-  }
-
-  toggle_lock() {
-    if(this.locked) {
+    toggle_lock() {
+      if (this.locked) {
         this.locked = false;
-    } else {
+      } else {
         this.locked = true;
+      }
     }
-  }
 
-  video_pan_start() {
-    if(!this.locked) {
+    video_pan_start() {
+      if (!this.locked) {
         commandWS.send("video_pan_start");
+      }
     }
-  }
 
-  video_pan_move(deltaX, deltaY) {
-    if(!this.locked) {
-        const command = "video_pan_move(" + deltaX + "," + deltaY +")";
+    video_pan_move(deltaX, deltaY) {
+      if (!this.locked) {
+        const command = "video_pan_move(" + deltaX + "," + deltaY + ")";
         commandWS.send(command);
+      }
+    }
+
+    drive_fwd() {
+      commandWS.send("drive_fwd");
+    }
+
+    drive_fwd_left() {
+      commandWS.send("drive_fwd_left");
+    }
+
+    drive_fwd_right() {
+      commandWS.send("drive_fwd_right");
+    }
+
+    drive_bwd() {
+      commandWS.send("drive_bwd");
+    }
+
+    drive_bwd_left() {
+      commandWS.send("drive_bwd_left");
+    }
+
+    drive_bwd_right() {
+      commandWS.send("drive_bwd_right");
+    }
+
+    drive_stop() {
+      commandWS.send("drive_stop");
     }
   }
 
-  drive_fwd() {
-    commandWS.send("drive_fwd");
-  }
+  const car = new Car();
 
-  drive_fwd_left() {
-    commandWS.send("drive_fwd_left");
-  }
+  const element = document.getElementById("gestureHandler");
 
-  drive_fwd_right() {
-    commandWS.send("drive_fwd_right");
-  }
-
-  drive_bwd() {
-    commandWS.send("drive_bwd");
-  }
-
-  drive_bwd_left() {
-    commandWS.send("drive_bwd_left");
-  }
-
-  drive_bwd_right() {
-    commandWS.send("drive_bwd_right");
-  }
-
-  drive_stop() {
-    commandWS.send("drive_stop");
-  }
-
-}
-
-const car = new Car();
-
-const element = document.getElementById("gestureHandler");
-
-/*
+  /*
 
 TODO camera panning:
 
@@ -110,45 +108,44 @@ mc.on("panmove", function(ev) {
 
 */
 
-function handleDriveStartEvent(relativeX, relativeY) {
+  function handleDriveStartEvent(relativeX, relativeY) {
     if (relativeY < 0.5) {
-        if (relativeX < 0.3333) {
-            car.drive_fwd_left();
-        } else if (relativeX < 0.6666) {
-            car.drive_fwd();
-        } else {
-            car.drive_fwd_right();
-        }
+      if (relativeX < 0.3333) {
+        car.drive_fwd_left();
+      } else if (relativeX < 0.6666) {
+        car.drive_fwd();
+      } else {
+        car.drive_fwd_right();
+      }
     } else {
-        if (relativeX < 0.3333) {
-            car.drive_bwd_left();
-        } else if(relativeX < 0.6666) {
-            car.drive_bwd();
-        } else {
-            car.drive_bwd_right();
-        }
+      if (relativeX < 0.3333) {
+        car.drive_bwd_left();
+      } else if (relativeX < 0.6666) {
+        car.drive_bwd();
+      } else {
+        car.drive_bwd_right();
+      }
     }
-}
+  }
 
-element.addEventListener("mousedown", function(e) {
+  element.addEventListener("mousedown", function (e) {
     const relativeX = e.clientX / e.target.offsetWidth;
     const relativeY = e.clientY / e.target.offsetHeight;
     handleDriveStartEvent(relativeX, relativeY);
-});
-element.addEventListener("mouseup", function(e) {
+  });
+  element.addEventListener("mouseup", function (e) {
     car.drive_stop();
-});
-element.addEventListener("touchstart", function(e) {
+  });
+  element.addEventListener("touchstart", function (e) {
     e.preventDefault();
-    if(e.touches.length === 1) {
-        const relativeX = e.touches[0].clientX / e.target.offsetWidth;
-        const relativeY = e.touches[0].clientY / e.target.offsetHeight;
-        handleDriveStartEvent(relativeX, relativeY);
+    if (e.touches.length === 1) {
+      const relativeX = e.touches[0].clientX / e.target.offsetWidth;
+      const relativeY = e.touches[0].clientY / e.target.offsetHeight;
+      handleDriveStartEvent(relativeX, relativeY);
     }
-});
-element.addEventListener("touchend", function(e) {
+  });
+  element.addEventListener("touchend", function (e) {
     e.preventDefault();
     car.drive_stop();
-});
-
-}());
+  });
+})();

@@ -1,110 +1,121 @@
-<!doctype html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" sizes="154x154" href="icon.png">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" sizes="154x154" href="icon.png" />
     <title>Rufbot</title>
     <script type="text/javascript" src="performance-polyfill.js"></script>
     <script type="text/javascript" src="endswith.js"></script>
     <script type="text/javascript" src="hammer.min.js"></script>
     <style>
-        html, body {
-            margin:0;
-            padding:0;
-            background-color:black;
-        }
-        #liveImg {
-            display: block;
-            position:absolute;
-            width:100%;
-            height:100%;
-            top:0;
-            right:0;
-            width:100%;
-            height:100%;
-            /* object-fit: contain; */ /* with black borders, nothing cut off */
-            object-fit: cover; /* no black borders, some content potentially cut off */
-        }
-        #driveOverlay {
-            user-select: none;
-            position:absolute;
-            width:100%;
-            height:100%;
-            top:0;
-            right:0;
-        }
-        #driveOverlay div:nth-of-type(1) {
-            border-right: 1px solid white;
-            border-bottom: 1px solid white;
-            mix-blend-mode: difference;
-            position:absolute;
-            width: 33.333333%;
-            height: 50%;
-            top:0;
-            left:0;
-        }
-        #driveOverlay div:nth-of-type(2) {
-            border-right: 1px solid white;
-            border-bottom: 1px solid white;
-            mix-blend-mode: difference;
-            position:absolute;
-            width: 33.333333%;
-            height: 50%;
-            top: 0;
-            left: 33.333333%;
-        }
-        #driveOverlay div:nth-of-type(3) {
-            border-bottom: 1px solid white;
-            mix-blend-mode: difference;
-            position:absolute;
-            width: 33.333333%;
-            height: 50%;
-            top:0;
-            left: 66.666666%;
-        }
-        #driveOverlay div:nth-of-type(4) {
-            border-right: 1px solid white;
-            mix-blend-mode: difference;
-            position:absolute;
-            width: 33.333333%;
-            height: 50%;
-            top: 50%;
-            left: 0;
-        }
-        #driveOverlay div:nth-of-type(5) {
-            border-right: 1px solid white;
-            mix-blend-mode: difference;
-            position:absolute;
-            width: 33.333333%;
-            height: 50%;
-            top: 50%;
-            left: 33.333333%;
-        }
-        #driveOverlay div:nth-of-type(6) {
-            mix-blend-mode: difference;
-            position:absolute;
-            width: 33.333333%;
-            height: 50%;
-            top: 50%;
-            left: 66.666666%;
-        }
-        #gestureHandler {
-            user-select: none;
-            position:absolute;
-            width:100%;
-            height:100%;
-            top:0;
-            right:0;
-        }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: black;
+      }
+      #liveImg {
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        /* object-fit: contain; */ /* with black borders, nothing cut off */
+        object-fit: cover; /* no black borders, some content potentially cut off */
+      }
+      #driveOverlay {
+        user-select: none;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        right: 0;
+      }
+      #driveOverlay div:nth-of-type(1) {
+        border-right: 1px solid white;
+        border-bottom: 1px solid white;
+        mix-blend-mode: difference;
+        position: absolute;
+        width: 33.333333%;
+        height: 50%;
+        top: 0;
+        left: 0;
+      }
+      #driveOverlay div:nth-of-type(2) {
+        border-right: 1px solid white;
+        border-bottom: 1px solid white;
+        mix-blend-mode: difference;
+        position: absolute;
+        width: 33.333333%;
+        height: 50%;
+        top: 0;
+        left: 33.333333%;
+      }
+      #driveOverlay div:nth-of-type(3) {
+        border-bottom: 1px solid white;
+        mix-blend-mode: difference;
+        position: absolute;
+        width: 33.333333%;
+        height: 50%;
+        top: 0;
+        left: 66.666666%;
+      }
+      #driveOverlay div:nth-of-type(4) {
+        border-right: 1px solid white;
+        mix-blend-mode: difference;
+        position: absolute;
+        width: 33.333333%;
+        height: 50%;
+        top: 50%;
+        left: 0;
+      }
+      #driveOverlay div:nth-of-type(5) {
+        border-right: 1px solid white;
+        mix-blend-mode: difference;
+        position: absolute;
+        width: 33.333333%;
+        height: 50%;
+        top: 50%;
+        left: 33.333333%;
+      }
+      #driveOverlay div:nth-of-type(6) {
+        mix-blend-mode: difference;
+        position: absolute;
+        width: 33.333333%;
+        height: 50%;
+        top: 50%;
+        left: 66.666666%;
+      }
+      #gestureHandler {
+        user-select: none;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        right: 0;
+      }
     </style>
-</head>
-<body>
-<img id="liveImg"/>
-<div id="driveOverlay"><div></div><div></div><div></div><div></div><div></div><div></div></div>
-<div id="gestureHandler"></div>
-<script type="text/javascript" src="camera.js"></script>
-<script type="text/javascript" src="car.js"></script>
-</body>
+  </head>
+  <body>
+    <img id="liveImg" alt="Video" />
+    <div id="driveOverlay">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <div id="gestureHandler"></div>
+    <script type="text/javascript" src="camera.js"></script>
+    <script type="text/javascript" src="car.js"></script>
+  </body>
 </html>
