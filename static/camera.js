@@ -20,21 +20,15 @@
   if (!path.endsWith("/")) {
     path = path + "/";
   }
-  var ws = new WebSocket(wsProtocol + location.host + path + "video");
-  ws.binaryType = "arraybuffer";
+  let ws = new WebSocket(wsProtocol + location.host + path + "video");
 
-  function requestImage() {
-    request_start_time = performance.now();
-    ws.send("more");
-  }
-
-  ws.onopen = function () {
-    console.log("connection was established");
+  function onOpen() {
+    console.log("camera connection established");
     start_time = performance.now();
     requestImage();
-  };
+  }
 
-  ws.onmessage = function (evt) {
+  function onMessage(evt) {
     var arrayBuffer = evt.data;
     var blob = new Blob([new Uint8Array(arrayBuffer)], { type: "image/jpeg" });
     img.src = window.URL.createObjectURL(blob);
@@ -53,7 +47,29 @@
     var timeout = Math.max(0, target_time - request_time);
 
     setTimeout(requestImage, timeout);
-  };
+  }
+
+  function connect() {
+    ws = new WebSocket(wsProtocol + location.host + path + "video");
+    ws.binaryType = "arraybuffer";
+
+    ws.onopen = onOpen;
+    ws.onmessage = onMessage;
+  }
+
+  function requestImage() {
+    request_start_time = performance.now();
+    ws.send("more");
+  }
+
+  connect();
+
+  window.document.addEventListener("click", function (e) {
+    if (ws.readyState === WebSocket.CLOSED) {
+      console.log("Reconnecting to camera Websocket");
+      connect();
+    }
+  });
 
   // TODO implementieren dass kamera abgeschaltet wird, wenn seite nicht visible (siehe hm-aquarium)
 })();
